@@ -58,6 +58,7 @@ except ImportError:
 finally:
     import talib
 
+import talib as ta
 df_cc = pd.read_csv("china_concept.csv",encoding="GB2312")
 tickers = list(df_cc.Ticker2)
 names = list(df_cc.Name)
