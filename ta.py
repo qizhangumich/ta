@@ -101,12 +101,13 @@ name = names[tickers.index(ticker)]
 
 df= stock.history(ticker, start=start, end=end)
 macd,signal,hist =ta.MACD(df.Close, fastperiod=12, slowperiod=26,signalperiod=9)
+condition = (macd>=signal) & (macd>0)
 
 fig_1, ax = plt.subplots(2,figsize=(14, 6), facecolor='0.9')
 ax[0].plot(df.index,macd,label="DIF_fast")
 ax[0].plot(df.index,signal,label="DEA_slow")
 ax[0].bar(df.index,hist,label="hist")
-
+ax[0].fill_between(df.index,macd,signal,where=condition>0,color='green', alpha=0.2)
 ax[0].plot([df.index[0],df.index[-1]],[0,0],"r")
 #ax[0].plot([df.index[0],df.index[-1]],[20,20],"k")
 ax[0].legend()
@@ -114,5 +115,14 @@ ax[0].legend()
 ax[1].plot(df.index,df.Close,"b.-",label="Close")
 ax[1].legend()
 
+up,mid,low =ta.BBANDS(df.Close, timeperiod=period, nbdevup=2,nbdevdn=2,matype=0)
+fig_2, axe = plt.subplots(figsize=(14, 6), facecolor='0.9')
+#axe.plot(df.index,up,label="upperband")
+#axe.plot(df.index,mid,label="middleline")
+#axe.plot(df.index,low,label="lowerband")
+axe.fill_between(df.index,up,low,color='green', alpha=0.2)
+axe.plot(df.index,df.Close,"black",label="Close")
+
 st.title(name)
 st.pyplot(fig_1)
+st.pyplot(fig_2)
