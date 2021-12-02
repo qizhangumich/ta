@@ -96,11 +96,23 @@ info = stock.info
 
 name = names[tickers.index(ticker)]
 
-st.title(name)
+#st.title(name)
 
 
 df= stock.history(ticker, start=start, end=end)
-output = talib.SMA(df.Close)
-fig, ax = plt.subplots()
-ax.plot(df.index,output)
-st.pyplot(fig)
+macd,signal,hist =ta.MACD(df.Close, fastperiod=12, slowperiod=26,signalperiod=9)
+
+fig_1, ax = plt.subplots(2,figsize=(14, 6), facecolor='0.9')
+ax[0].plot(df.index,macd,label="DIF_fast")
+ax[0].plot(df.index,signal,label="DEA_slow")
+ax[0].bar(df.index,hist,label="hist")
+
+ax[0].plot([df.index[0],df.index[-1]],[0,0],"r")
+#ax[0].plot([df.index[0],df.index[-1]],[20,20],"k")
+ax[0].legend()
+
+ax[1].plot(df.index,df.Close,"b.-",label="Close")
+ax[1].legend()
+
+st.title(name)
+st.pyplot(fig_1)
